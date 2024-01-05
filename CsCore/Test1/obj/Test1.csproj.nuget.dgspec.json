@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\Test1.csproj": {}
+    "c:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\Test1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\Test1.csproj": {
+    "c:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\Test1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\Test1.csproj",
+        "projectUniqueName": "c:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\Test1.csproj",
         "projectName": "Test1",
-        "projectPath": "C:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\Test1.csproj",
+        "projectPath": "c:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\Test1.csproj",
         "packagesPath": "C:\\Users\\derli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\obj\\",
+        "outputPath": "c:\\Users\\derli\\OneDrive\\Documents\\Softwareprojekt\\cscore\\CsCore\\Test1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\derli\\AppData\\Roaming\\NuGet\\NuGet.Config"

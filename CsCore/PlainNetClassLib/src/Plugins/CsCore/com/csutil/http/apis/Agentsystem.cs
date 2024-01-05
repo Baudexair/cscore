@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using com.csutil.model.jsonschema;
 using Newtonsoft.Json;
@@ -67,20 +68,17 @@ namespace com.csutil.http.apis {
             notes= pNotes;
         }
         //Wir müssem das generate nochmal komplett überarbeiten... So funktioniert das aktuell nicht.
-        public async Task<string> generateAsync(string pmessage){
-            var openAi = new OpenAi(await IoC.inject.GetAppSecrets().GetSecret(aiKey));
-            List<ChatGpt.Line> messages = new List<ChatGpt.Line>();
-            messages.Add(new ChatGpt.Line(ChatGpt.Role.system, content: role));
-            messages.Add(new ChatGpt.Line(pmessage));
-
-                
-            // Send the messages to the AI and get the response:
-            var result = await openAi.Complete(messages);
-            var completion = result.choices.Single().text;
-            if (completion!=null){
-                return completion;
-            }
-            return null;
+        public async Task<string> generateAsync(string pmessage)
+        {
+            var openAi = new OpenAi(aiKey);
+            var messages = new List<ChatGpt.Line>() {
+                new ChatGpt.Line(ChatGpt.Role.system, content: role),
+                new ChatGpt.Line(ChatGpt.Role.user, content: pmessage),
+            };
+            var response = await openAi.ChatGpt(new ChatGpt.Request(messages));
+            ChatGpt.Line newLine = response.choices.Single().message;
+            messages.Add(newLine);
+            return JsonWriter.AsPrettyString(messages) ;
         }
 
     }
