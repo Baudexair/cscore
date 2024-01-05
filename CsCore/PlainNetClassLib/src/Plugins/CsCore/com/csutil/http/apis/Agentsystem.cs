@@ -71,14 +71,11 @@ namespace com.csutil.http.apis {
         public async Task<string> generateAsync(string pmessage)
         {
             var openAi = new OpenAi(aiKey);
-            var messages = new List<ChatGpt.Line>() {
-                new ChatGpt.Line(ChatGpt.Role.system, content: role),
-                new ChatGpt.Line(ChatGpt.Role.user, content: pmessage),
-            };
-            var response = await openAi.ChatGpt(new ChatGpt.Request(messages));
-            ChatGpt.Line newLine = response.choices.Single().message;
-            messages.Add(newLine);
-            return JsonWriter.AsPrettyString(messages) ;
+            var prompt = "Your role is: "+ role + " your prompt: " + pmessage;
+            var result = await openAi.Complete(prompt);
+            var completion = result.choices.Single().text;
+            return "prompt:" +pmessage+ "answer" +completion;
+
         }
 
     }
