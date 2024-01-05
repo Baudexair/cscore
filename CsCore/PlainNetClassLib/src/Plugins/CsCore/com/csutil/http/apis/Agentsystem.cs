@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using com.csutil.model.jsonschema;
 using Newtonsoft.Json;
@@ -35,24 +36,24 @@ namespace com.csutil.http.apis {
         public string notes;
         public string role;
         public string aiKey;
-        public List<Message> convlist
+        public List<Message> convlist;
         public string getName(){
             return name;
         }
         public void receiveMessage(string pMessage, Agent pTransmitter){
-            this.convlist.add(new Message(pTransmitter, this, pMessage));
+            this.convlist.Add(new Message(pTransmitter, this, pMessage));
         }
         public void sendMessage(string pMessage, Agent pReceiver){
-          receiver.receiveMessage(pMessage, this);
-          this.convlist.add(new Message(this, pReceiver, pMessage));
+          pReceiver.receiveMessage(pMessage, this);
+          this.convlist.Add(new Message(this, pReceiver, pMessage));
         }
         public void resetConvo(){
             this.convlist = new List<Message>();
         }
         private void resetConvo(Agent pAgent){
-            foreach (m in this.convlist){
-                if(isEqual(m.receiver,pAgent)||isEqual(m.transmitter,pAgent)){
-                    convlist.remove(m);
+            foreach (Message m in this.convlist){
+                if(Equals(m.receiver,pAgent)||Equals(m.transmitter,pAgent)){
+                    convlist.Remove(m);
                 }
             }
         }
@@ -66,22 +67,16 @@ namespace com.csutil.http.apis {
         public void setNotes(string pNotes){
             notes= pNotes;
         }
-
-        public var generate(string pmessage){
-            var openAi = new OpenAi(await IoC.inject.GetAppSecrets().GetSecret(aiKey));
-            var messages = new List<ChatGpt.Line>();
-            messages.Add(new ChatGpt.Line(ChatGpt.Role.system, content: role));
-
-            messages.Add(pmessage);
-
-                
-            // Send the messages to the AI and get the response:
-            var result = await openAi.Complete(messages);
+        //Wir müssem das generate nochmal komplett überarbeiten... So funktioniert das aktuell nicht.
+        public async Task<string> generateAsync(string pmessage)
+        {
+            var openAi = new OpenAi(aiKey);
+            var prompt = "Your role is: "+ role + " your prompt: " + pmessage;
+            var result = await openAi.Complete(prompt);
             var completion = result.choices.Single().text;
-            if (Assert.NotEmpty(completion)){
-                return completion;
-            }
-            return null;
+            return "prompt:" +pmessage+ "answer" +completion;
+
         }
 
     }
+}
