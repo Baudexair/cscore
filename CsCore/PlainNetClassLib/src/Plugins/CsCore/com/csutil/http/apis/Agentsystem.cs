@@ -77,6 +77,15 @@ namespace com.csutil.http.apis {
             return "prompt:" +pmessage+ "answer" +completion;
 
         }
+        public async Task<string> generateAsyncAnswerOnly(string pmessage)
+        {
+            var openAi = new OpenAi(aiKey);
+            var prompt = "Your role is: "+ role + " your prompt: " + pmessage;
+            var result = await openAi.Complete(prompt);
+            var completion = result.choices.Single().text;
+            return (string) completion;
+
+        }
 
     }
 }
