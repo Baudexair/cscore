@@ -23,28 +23,31 @@ namespace com.csutil.integrationTests.http {
             string re = await agent2.generateAsync(agent2.convlist.Last().message);
             agent2.sendMessage(re,agent1);
             Assert.NotEmpty(re);
-            Trace.WriteLine("Hello, World!");
+            Trace.WriteLine(answer +" Review: "+re);
+            Console.WriteLine(answer +" Review: "+re);
             Log.d(answer + " Review:" + re);
         }
 
         [Fact]
         public async Task Test3_Agentguesser()
         {
+            //agent 1 needs to answer only with one of the following answers: YES, NO, GAME OVER | It still does not work. Often agent1 spoilers by accident their identity, example: Is your character male? Yes Iron Man is male.
             string key="";
-            Agent agent1 = new Agent("Agent1", "You will be playing a guessing game. You will have to answer the questions with yes, no or maybe until your character is guessed. If your character is guessed only write: Game Over. Your character is: ", key);
-            Agent agent2 = new Agent("Agent2", "You will be playing a guessing game. Ask questions until you correctly guess the character. Your previous questions and their answers will be given to you: ", key);
-            string answer = await agent1.generateAsyncAnswerOnly("Choose a character and write only the character down.");
+            Agent agent1 = new Agent("Agent1", "You are the given Character. Answer the following question about yourself with one of these answers YES|NO. Write nothing else. If your identity is guessed, write GAME OVER and nothing else.", key);
+            Agent agent2 = new Agent("Agent2", "You will be playing a guessing game. Ask questions until you correctly guess the identity of the other person. Your previous questions and their answers will be given to you: ", key);
+            string answer = await agent1.generateAsyncAnswerOnly("Choose a character for the guessing game and write only the character as Output.");
             agent1.setNotes(answer);
+            Trace.WriteLine("Character: "+answer);
             Boolean guessed = false;
             int counter = 0;
             while (!guessed || counter==10 ){
-                await Task.Delay(3000);
                 agent2.sendMessage(await agent2.generateAsyncAnswerOnly("Your Notes: " + agent2.getNotes() + "Ask your next question or guess the character: "),agent1);
+                Trace.WriteLine("Question: "+agent2.convlist.Last().message);
                 agent2.setNotes(agent2.getNotes()+ agent2.convlist.Last().message);
-                await Task.Delay(3000);
-                agent1.sendMessage(await agent2.generateAsyncAnswerOnly(agent1.getNotes()+agent2.convlist.Last().message),agent2);
+                agent1.sendMessage(await agent2.generateAsyncAnswerOnly(" Your character is: "+agent1.getNotes()+" The Question is: "+agent2.convlist.Last().message),agent2);
+                Trace.WriteLine("Answer: "+agent2.convlist.Last().message);
                 agent2.setNotes(agent2.getNotes()+": "+ agent2.convlist.Last().message+"--");
-                if(agent2.convlist.Last().message== "Game Over"){
+                if(agent2.convlist.Last().message== "GAME OVER"){
                     guessed=true;
                 }
                 counter++;

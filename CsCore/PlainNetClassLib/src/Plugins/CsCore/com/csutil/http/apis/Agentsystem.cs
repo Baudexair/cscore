@@ -71,20 +71,30 @@ namespace com.csutil.http.apis {
         public async Task<string> generateAsync(string pmessage)
         {
             var openAi = new OpenAi(aiKey);
-            var prompt = "Your role is: "+ role + " your prompt: " + pmessage;
-            var result = await openAi.Complete(prompt);
-            var completion = result.choices.Single().text;
-            return "prompt:" +pmessage+ "answer" +completion;
+            var messages = new List<ChatGpt.Line>() {
+                new ChatGpt.Line(ChatGpt.Role.system, content: role),
+                new ChatGpt.Line(ChatGpt.Role.user, content: pmessage),
+            };
+            var request = new ChatGpt.Request(messages);
+            request.model = "gpt-3.5-turbo-1106"; // See https://platform.openai.com/docs/models/gpt-4
+            var response = await openAi.ChatGpt(request);
+            ChatGpt.Line newLine = response.choices.Single().message;
+            messages.Add(newLine);
+            return "response.content=" + JsonWriter.AsPrettyString(messages);
 
         }
         public async Task<string> generateAsyncAnswerOnly(string pmessage)
         {
             var openAi = new OpenAi(aiKey);
-            var prompt = "Your role is: "+ role + " your prompt: " + pmessage;
-            var result = await openAi.Complete(prompt);
-            var completion = result.choices.Single().text;
-            return (string) completion;
-
+            var messages = new List<ChatGpt.Line>() {
+                new ChatGpt.Line(ChatGpt.Role.system, content: role),
+                new ChatGpt.Line(ChatGpt.Role.user, content: pmessage),
+            };
+            var request = new ChatGpt.Request(messages);
+            request.model = "gpt-3.5-turbo-1106"; // See https://platform.openai.com/docs/models/gpt-4
+            var response = await openAi.ChatGpt(request);
+            ChatGpt.Line newLine = response.choices.Single().message;
+            return "response.content=" + JsonWriter.AsPrettyString(newLine);
         }
 
     }
