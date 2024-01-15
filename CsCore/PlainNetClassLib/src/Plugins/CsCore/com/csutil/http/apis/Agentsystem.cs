@@ -16,9 +16,9 @@ namespace com.csutil.http.apis {
     }
     public class Message{
         public Agent transmitter;
-        public Agent receiver;
+        public List<Agent> receiver;
         public string message;
-        public Message(Agent pTransmitter, Agent pReceiver, string pMessage){
+        public Message(Agent pTransmitter, List<Agent> pReceiver, string pMessage){
             transmitter=pTransmitter;
             receiver=pReceiver;
             message=pMessage;
@@ -41,11 +41,24 @@ namespace com.csutil.http.apis {
             return name;
         }
         public void receiveMessage(string pMessage, Agent pTransmitter){
-            this.convlist.Add(new Message(pTransmitter, this, pMessage));
+            List<Agent> list = new List<Agent>();
+            list.Add(this);
+            this.convlist.Add(new Message(pTransmitter, list, pMessage));
         }
         public void sendMessage(string pMessage, Agent pReceiver){
           pReceiver.receiveMessage(pMessage, this);
-          this.convlist.Add(new Message(this, pReceiver, pMessage));
+          List<Agent> list = new List<Agent>();
+          list.Add(pReceiver);
+          this.convlist.Add(new Message(this, list, pMessage));
+        }
+
+        public void sendMessage(string pMessage,List<Agent> agents){
+            foreach (Agent a in agents)
+            {
+                a.receiveMessage(pMessage, this);
+            }
+            this.convlist.Add(new Message(this, agents, pMessage));
+
         }
         public void resetConvo(){
             this.convlist = new List<Message>();
@@ -67,7 +80,7 @@ namespace com.csutil.http.apis {
         public void setNotes(string pNotes){
             notes= pNotes;
         }
-        //Wir müssem das generate nochmal komplett überarbeiten... So funktioniert das aktuell nicht.
+        
         public async Task<string> generateAsync(string pmessage)
         {
             var openAi = new OpenAi(aiKey);
